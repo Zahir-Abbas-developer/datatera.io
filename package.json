@@ -4,9 +4,14 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint .",
+    "start": "vite --mode staging",
+    "start:production": "vite --mode production",
+    "start:demo": "vite --mode demo",
+    "build:staging": "vite build --mode staging",
+    "build:production": "vite build --mode production",
+    "build:demo": "vite build --mode demo",
+    "serve": "vite preview",
+    "lint": "eslint ./",
     "preview": "vite preview"
   },
   "dependencies": {
