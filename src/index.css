@@ -1,0 +1,11 @@
+
+@import "tw-animate-css";
+@import "tailwindcss";
+@custom-variant dark (&:is(.dark *));
+html, body {
+    overflow-x: auto;
+  }
+  
+
+
+
