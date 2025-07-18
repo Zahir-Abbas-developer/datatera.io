@@ -130,7 +130,7 @@ const Sidebar = ({
       {/* Collapse/Expand Button */}
       <button
         onClick={() => onCollapsedChange((c) => !c)}
-        className="absolute  -right-4 z-20 bg-[#232323] text-white rounded-full shadow p-1 border border-[#232323] hover:bg-[#333] transition"
+        className="absolute  right-4 z-20 bg-[#232323] text-white rounded-full shadow p-1 border border-[#232323] hover:bg-[#333] transition"
         style={{ width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center' ,backgroundClip:"black" ,"marginTop":"14px"}}
         aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
       >
