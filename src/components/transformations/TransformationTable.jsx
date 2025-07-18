@@ -28,9 +28,8 @@ const TransformationTable = () => {
   const [data] = useState(initialData);
   const [filters, setFilters] = useState({});
   const [page, setPage] = useState(1);
-  const [sort, setSort] = useState({ key: null, direction: null }); // direction: 'asc' | 'desc' | null
+  const [sort, setSort] = useState({ key: null, direction: null });
 
-  // Filtering
   const filteredData = data.filter(row =>
     columns.every(col =>
       !filters[col.key] ||
@@ -38,7 +37,6 @@ const TransformationTable = () => {
     )
   );
 
-  // Sorting
   const sortedData = React.useMemo(() => {
     if (!sort.key || !sort.direction) return filteredData;
     const sorted = [...filteredData].sort((a, b) => {
@@ -51,11 +49,9 @@ const TransformationTable = () => {
     return sorted;
   }, [filteredData, sort]);
 
-  // Pagination
   const totalPages = Math.ceil(sortedData.length / PAGE_SIZE);
   const paginatedData = sortedData.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  // Sorting handler
   const handleSort = (key) => {
     setSort(prev => {
       if (prev.key !== key) return { key, direction: 'asc' };
@@ -66,38 +62,38 @@ const TransformationTable = () => {
     setPage(1);
   };
 
-  // Pagination handler
   const goToPage = (p) => {
     if (p < 1 || p > totalPages) return;
     setPage(p);
   };
 
   return (
-      <div className="w-full bg-gray-100 rounded-xl shadow-lg border p-5">
-        {/* File Upload Button */}
-        <div className="sticky top-0 z-10 bg-white p-4 sm:p-6 border-b">
-  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-    <button className="bg-[#4AA181] text-white px-3 py-2 sm:px-4 sm:py-2 rounded font-semibold whitespace-nowrap w-full sm:w-auto text-sm sm:text-base">
-      Choose File, Text, or Website
-      <span className="block text-xs font-normal mt-1">Max file size 2 Mb</span>
-    </button>
-    <div className="flex gap-2 w-full sm:w-auto">
-      <button className="bg-[#e6f4ef] text-[#4AA181] border border-[#4AA181] rounded px-3 py-2 sm:px-4 sm:py-2 font-medium whitespace-nowrap text-sm sm:text-base flex-1 sm:flex-none">
-        + Add Column
-      </button>
-      <button className="bg-[#4AA181] text-white rounded px-3 py-2 sm:px-4 sm:py-2 font-medium whitespace-nowrap text-sm sm:text-base flex-1 sm:flex-none">
-        + Add Row
-      </button>
-    </div>
-  </div>
-</div>
+    <div className="w-full bg-gray-100 rounded-xl shadow-lg border p-1 pt-0 pb-0 ove">
+      {/* File Upload Button */}
+      <div className="sticky top-0 z-20 p-2 sm:p-2 border-b bg-transparent">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <button className="bg-[#4AA181] text-white px-3 py-0 sm:px-4 sm:py-2 rounded font-semibold whitespace-nowrap w-full sm:w-auto text-sm sm:text-base">
+            Choose File, Text, or Website
+            <span className="block text-xs font-normal mt-1">Max file size 2 Mb</span>
+          </button>
+          <div className="flex gap-2 w-full sm:w-auto">
+            <button className="bg-[#e6f4ef] text-[#4AA181] border border-[#4AA181] rounded px-3 py-2 sm:px-4 sm:py-2 font-medium whitespace-nowrap text-sm sm:text-base flex-1 sm:flex-none">
+              + Add Column
+            </button>
+            <button className="bg-[#4AA181] text-white rounded px-3 py-2 sm:px-4 sm:py-2 font-medium whitespace-nowrap text-sm sm:text-base flex-1 sm:flex-none">
+              + Add Row
+            </button>
+          </div>
+        </div>
+      </div>
 
-        {/* Table Section */}
-        <div className="p-6">
-          <div className="overflow-x-auto">
+      {/* Table Section */}
+      <div className="p-1 pt-1">
+        <div className="overflow-x-auto">
+          <div className="max-h-[457px]">
             <table className="min-w-full border border-gray-200 rounded-lg">
-              <thead>
-                <tr className="bg-[#f8fafc]">
+              <thead className="sticky top-0 z-10 bg-[#f8fafc]">
+                <tr>
                   {columns.map(col => (
                     <th
                       key={col.key}
@@ -150,47 +146,45 @@ const TransformationTable = () => {
               </tbody>
             </table>
           </div>
-
-          {/* Pagination Controls */}
-          <div className="flex items-center justify-between mt-4 flex-wrap gap-2 sm:flex-nowrap">
-  <span className="text-sm text-gray-600 whitespace-nowrap">
-    Page {page} of {totalPages}
-  </span>
-
-  <div className="flex gap-1 overflow-x-auto max-w-full sm:overflow-visible">
-    <button
-      className="px-3 py-1 rounded bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-50 shrink-0"
-      onClick={() => goToPage(page - 1)}
-      disabled={page === 1}
-    >
-      Prev
-    </button>
-    {Array.from({ length: totalPages }, (_, i) => (
-      <button
-        key={i + 1}
-        className={`px-3 py-1 rounded shrink-0 ${
-          page === i + 1
-            ? 'bg-[#4AA181] text-white'
-            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-        }`}
-        onClick={() => goToPage(i + 1)}
-      >
-        {i + 1}
-      </button>
-    ))}
-    <button
-      className="px-3 py-1 rounded bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-50 shrink-0"
-      onClick={() => goToPage(page + 1)}
-      disabled={page === totalPages}
-    >
-      Next
-    </button>
-  </div>
-</div>
-
         </div>
+
+        {/* Sticky Pagination Controls */}
+        <div className="sticky bottom-0 bg-white z-20 border-t mt-4 py-3 px-4">
+          <div className="flex items-center justify-between flex-wrap gap-2 sm:flex-nowrap">
+            <span className="text-sm text-gray-600 whitespace-nowrap">
+              Page {page} of {totalPages}
+            </span>
+            <div className="flex gap-1 overflow-x-auto max-w-full sm:overflow-visible">
+              <button
+                className="px-3 py-1 rounded bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-50 shrink-0"
+                onClick={() => goToPage(page - 1)}
+                disabled={page === 1}
+              >
+                Prev
+              </button>
+              {Array.from({ length: totalPages }, (_, i) => (
+                <button
+                  key={i + 1}
+                  className={`px-3 py-1 rounded shrink-0 ${page === i + 1 ? 'bg-[#4AA181] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                  onClick={() => goToPage(i + 1)}
+                >
+                  {i + 1}
+                </button>
+              ))}
+              <button
+                className="px-3 py-1 rounded bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-50 shrink-0"
+                onClick={() => goToPage(page + 1)}
+                disabled={page === totalPages}
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        </div>
+
       </div>
+    </div>
   );
 };
 
-export default TransformationTable; 
+export default TransformationTable;
