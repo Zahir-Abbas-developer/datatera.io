@@ -70,7 +70,7 @@ const TransformationTable = () => {
   return (
     <div className="w-full bg-gray-100 rounded-xl shadow-lg border p-1 pt-0 pb-0 ove">
       {/* File Upload Button */}
-      <div className="sticky top-0 z-20 p-2 sm:p-2 border-b bg-transparent">
+      <div className=" top-0 z-20 p-2 sm:p-2 border-b bg-transparent">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
           <button className="bg-[#4AA181] text-white px-3 py-0 sm:px-4 sm:py-2 rounded font-semibold whitespace-nowrap w-full sm:w-auto text-sm sm:text-base">
             Choose File, Text, or Website
@@ -92,7 +92,7 @@ const TransformationTable = () => {
         <div className="overflow-x-auto">
           <div className="max-h-[457px]">
             <table className="min-w-full border border-gray-200 rounded-lg">
-              <thead className="sticky top-0 z-10 bg-[#f8fafc]">
+              <thead className=" top-0 z-10 bg-[#f8fafc]">
                 <tr>
                   {columns.map(col => (
                     <th
@@ -149,7 +149,7 @@ const TransformationTable = () => {
         </div>
 
         {/* Sticky Pagination Controls */}
-        <div className="sticky bottom-0 bg-white z-20 border-t mt-4 py-3 px-4">
+        <div className=" bottom-0 bg-white z-20 border-t mt-4 py-3 px-4">
           <div className="flex items-center justify-between flex-wrap gap-2 sm:flex-nowrap">
             <span className="text-sm text-gray-600 whitespace-nowrap">
               Page {page} of {totalPages}
