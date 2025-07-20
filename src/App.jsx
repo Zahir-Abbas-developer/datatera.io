@@ -3,7 +3,7 @@ import AppRoutes from "./routes";
 import Sidebar from './components/ui/Sidebar';
 import TransformationTemplatesPage from './components/transformations/TransformationTemplatesPage';
 import TransformationTable from './components/transformations/TransformationTable';
-import FooterComponent from './components/header';
+import FooterComponent from './components/footer';
 
 function App() {
   return (
