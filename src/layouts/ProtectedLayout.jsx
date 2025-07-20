@@ -31,7 +31,7 @@ const ProtectedLayout = ({ setIsStickyHeader }) => {
   if (!user) return <Navigate to="/signin" replace />;
 
   return (
-    <div className="relative flex h-screen overflow-hidden">
+    <div className="relative flex h-screen overflow-hidden bg-white-100">
       {/* Mobile menu button - only shows on mobile when sidebar is collapsed */}
       {isMobile && isSidebarCollapsed && (
         <button
@@ -58,7 +58,7 @@ const ProtectedLayout = ({ setIsStickyHeader }) => {
       )}>
         {!isDashboard &&  <HeaderComponent />}
 
-        <div className="flex-1 overflow-auto">
+        <div className="flex-1 overflow-auto mt-1">
           <Outlet />
         </div>
         {!isDashboard && <FooterComponent />}
