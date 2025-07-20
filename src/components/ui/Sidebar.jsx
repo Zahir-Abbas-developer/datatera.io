@@ -9,6 +9,13 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { Tooltip, TooltipTrigger, TooltipContent } from './tooltip'; // adjust path as needed
 import TransformationLimitBar from '../transformations/TransformationLimitBar';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const Sidebar = ({
   userEmail = 'mihailorama@gmail.com',
@@ -30,6 +37,7 @@ const Sidebar = ({
   onLogout,
   isCollapsed,
   onCollapsedChange,
+  setIsStickyHeader
 }) => {
   const [openMenuIdx, setOpenMenuIdx] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -38,6 +46,7 @@ const Sidebar = ({
   const menuRef = useRef();
   const navigate = useNavigate();
   const { logout } = useAuth();
+    const [selectedLanguage, setSelectedLanguage] = useState("english");
 
   const bottomItems = [
     {
@@ -94,15 +103,30 @@ const Sidebar = ({
   };
 
   // Close menu when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target)) {
-        setOpenMenuIdx(null);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+// Close dropdown menu if clicking outside
+useEffect(() => {
+  const handleClickOutside = (e) => {
+    if (menuRef.current && !menuRef.current.contains(e.target)) {
+      setOpenMenuIdx(null);
+    }
+  };
+  document.addEventListener('mousedown', handleClickOutside);
+  return () => document.removeEventListener('mousedown', handleClickOutside);
+}, []);
+
+// Auto-collapse sidebar on screen width < 570px
+useEffect(() => {
+  const handleResize = () => {
+    if (window.innerWidth < 570) {
+      onCollapsedChange(true);
+    }
+  };
+
+  handleResize(); // Check on initial mount
+  window.addEventListener('resize', handleResize);
+  return () => window.removeEventListener('resize', handleResize);
+}, [onCollapsedChange]);
+
 
   const chromeIcon = (
     <svg
@@ -145,11 +169,22 @@ const Sidebar = ({
             <span className="font-semibold text-base truncate text-center">{userEmail}</span>
           </div>
         )}
-
+      {   !isCollapsed && ( <div className="flex justify-center">
+          <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
+          <SelectTrigger className="w-[60%] flex items-center justify-center">
+            <SelectValue placeholder="Language" />
+          </SelectTrigger>
+          <SelectContent className="bg-white">
+            <SelectItem value="english">English</SelectItem>
+            <SelectItem value="spanish">Spanish</SelectItem>
+            <SelectItem value="french">French</SelectItem>
+          </SelectContent>
+        </Select>
+</div>)}
         {/* New transformation button */}
         {!isCollapsed && (
           <div className="flex-shrink-0 px-4 pt-4 pb-2 w-full">
-            <Button onClick={() => setShowModal(true)} className="w-full bg-[#4AA181] hover:bg-[#388a6b] text-white font-semibold flex items-center gap-2">
+            <Button onClick={() => {setShowModal(true) ;setIsStickyHeader(false)}} className="w-full bg-[#4AA181] hover:bg-[#388a6b] text-white font-semibold flex items-center gap-2">
               <Plus size={18} /> New transformation...
             </Button>
           </div>
@@ -350,6 +385,7 @@ const Sidebar = ({
         }}
         mode={modalMode}
         initialData={editingItem}
+        setIsStickyHeader={setIsStickyHeader}
       />
     </aside>
   );

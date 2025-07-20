@@ -5,7 +5,7 @@ import Sidebar from '@/components/ui/Sidebar';
 import HeaderComponent from '@/components/header';
 import FooterComponent from '@/components/footer';
 
-const ProtectedLayout = () => {
+const ProtectedLayout = ({setIsStickyHeader}) => {
   const { user } = useAuth();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
@@ -20,6 +20,7 @@ const ProtectedLayout = () => {
         onClose={() => {}} 
         isCollapsed={isSidebarCollapsed}
         onCollapsedChange={setIsSidebarCollapsed}
+        setIsStickyHeader={setIsStickyHeader}
       />
       <main className={`flex-1 overflow-auto transition-all duration-200 flex flex-col ${isSidebarCollapsed ? 'ml-16' : 'ml-80'}`}>
       {!isDashboard && <FooterComponent />}

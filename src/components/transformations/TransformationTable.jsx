@@ -23,7 +23,7 @@ const initialData = Array.from({ length: 25 }, (_, i) => ({
 
 const PAGE_SIZE = 10;
 
-const TransformationTable = () => {
+const TransformationTable = ({isStickyHeader ,setIsStickyHeader}) => {
   const [columns] = useState(initialColumns);
   const [data] = useState(initialData);
   const [filters, setFilters] = useState({});
@@ -77,7 +77,7 @@ const TransformationTable = () => {
             <span className="block text-xs font-normal mt-1">Max file size 2 Mb</span>
           </button>
           <div className="flex gap-2 w-full sm:w-auto">
-            <button className="bg-[#e6f4ef] text-[#4AA181] border border-[#4AA181] rounded px-3 py-2 sm:px-4 sm:py-2 font-medium whitespace-nowrap text-sm sm:text-base flex-1 sm:flex-none">
+            <button className="bg-[#4AA181] text-white rounded px-3 py-2 sm:px-4 sm:py-2 font-medium whitespace-nowrap text-sm sm:text-base flex-1 sm:flex-none">
               + Add Column
             </button>
             <button className="bg-[#4AA181] text-white rounded px-3 py-2 sm:px-4 sm:py-2 font-medium whitespace-nowrap text-sm sm:text-base flex-1 sm:flex-none">
@@ -92,7 +92,7 @@ const TransformationTable = () => {
         <div className="overflow-x-auto">
           <div className="max-h-[457px]">
             <table className="min-w-full border border-gray-200 rounded-lg">
-              <thead className=" top-0 z-10 bg-[#f8fafc]">
+              <thead className={`${isStickyHeader&&'sticky'} top-0 z-10 bg-[#f8fafc]`}>
                 <tr>
                   {columns.map(col => (
                     <th

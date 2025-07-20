@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const AddTransformationModal = ({ open, onClose, mode = 'create', initialData = null }) => {
+const AddTransformationModal = ({ open, onClose, mode = 'create', initialData = null ,setIsStickyHeader }) => {
   const [formData, setFormData] = useState({
     name: '',
     description: ''
@@ -33,7 +33,7 @@ const AddTransformationModal = ({ open, onClose, mode = 'create', initialData = 
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/30 p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xl p-6 relative animate-fade-in max-h-[90vh] overflow-y-auto">
         <button
-          onClick={onClose}
+          onClick={()=>{onClose();setIsStickyHeader(true)}}
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-2xl font-light"
           aria-label="Close"
         >

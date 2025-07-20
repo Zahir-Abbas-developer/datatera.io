@@ -1,5 +1,5 @@
 // src/AppRoutes.tsx
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Signup from '@/components/authentication/signUp/Signup';
 import EnterEmail from '@/components/authentication/forgotPassword/EnterEmail';
@@ -9,7 +9,10 @@ import TransformationTable from '@/components/transformations/TransformationTabl
 
 const Signin = lazy(() => import('@/components/authentication/signIn/Signin'));
 
-const AppRoutes = () => (
+const AppRoutes = () => {
+  const [isStickyHeader, setIsStickyHeader] = useState(true); // your shared state
+
+  return (
   <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
     <Routes>
       {/* Public Routes */}
@@ -20,15 +23,16 @@ const AppRoutes = () => (
 
       {/* Protected Routes with Sidebar */}
       {/* Protected Routes with Sidebar */}
-  <Route element={<ProtectedLayout />}>
+  <Route element={<ProtectedLayout setIsStickyHeader={setIsStickyHeader} />}>
     <Route path="/dashboard" element={<TransformationTemplatesPage />} />
-    <Route path="/transformation-table" element={<TransformationTable />} />
+    <Route path="/transformation-table" element={<TransformationTable isStickyHeader={isStickyHeader}/>} setIsStickyHeader={setIsStickyHeader} />
     {/* Add more protected routes here */}
   </Route>
 
       <Route path="*" element={<Navigate to="/signin" replace />} />
     </Routes>
   </Suspense>
-);
+ );
+};
 
 export default AppRoutes;

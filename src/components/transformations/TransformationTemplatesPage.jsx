@@ -21,26 +21,28 @@ const TransformationTemplatesPage = () => (
   <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 py-10 px-1">
     <div className="w-full bg-gray-100 rounded-xl shadow-lg border">
      
-      <Accordion type="multiple" className="w-full px-4 pb-8 space-y-6 py-4">
-        <AccordionItem value="templates" className="rounded-lg shadow border bg-white overflow-hidden">
-          <CustomAccordionTrigger>Option 1. Choose a Template</CustomAccordionTrigger>
-          <AccordionContent className="px-6 py-4 bg-white rounded-b-lg">
-            <TemplateGrid />
-          </AccordionContent>
-        </AccordionItem>
-        <AccordionItem value="upload" className="rounded-lg shadow border bg-white overflow-hidden">
-          <CustomAccordionTrigger>Option 2. Upload Example</CustomAccordionTrigger>
-          <AccordionContent className="px-6 py-4 bg-white rounded-b-lg">
-            <UploadExampleSection />
-          </AccordionContent>
-        </AccordionItem>
-        <AccordionItem value="scratch" className="rounded-lg shadow border bg-white overflow-hidden">
-          <CustomAccordionTrigger>Option 3. Create From Scratch</CustomAccordionTrigger>
-          <AccordionContent className="px-6 py-4 bg-white rounded-b-lg">
-            <CreateFromScratchSection />
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+<Accordion type="multiple" className="w-full px-4 pb-8 space-y-6 py-4">
+  <AccordionItem value="templates" className="rounded-lg border border-gray-200 shadow bg-white">
+    <CustomAccordionTrigger>Option 1. Choose a Template</CustomAccordionTrigger>
+    <AccordionContent className="px-6 py-4 bg-white rounded-b-lg border-t border-gray-200">
+      <TemplateGrid />
+    </AccordionContent>
+  </AccordionItem>
+
+  <AccordionItem value="upload" className="rounded-lg border border-gray-200 shadow bg-white">
+    <CustomAccordionTrigger>Option 2. Upload Example</CustomAccordionTrigger>
+    <AccordionContent className="px-6 py-4 bg-white rounded-b-lg border-t border-gray-200">
+      <UploadExampleSection />
+    </AccordionContent>
+  </AccordionItem>
+
+  <AccordionItem value="scratch" className="rounded-lg border border-gray-200 shadow bg-white">
+    <CustomAccordionTrigger>Option 3. Create From Scratch</CustomAccordionTrigger>
+    <AccordionContent className="px-6 py-4 bg-white rounded-b-lg border-t border-gray-200 border">
+      <CreateFromScratchSection />
+    </AccordionContent>
+  </AccordionItem>
+</Accordion>
     </div>
     <style>{`
       .accordion-chevron[data-state="open"] {
