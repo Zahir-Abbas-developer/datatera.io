@@ -17,9 +17,9 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: ['react-router-dom'],
-    force: true, // Force pre-bundling to avoid dynamic import issues
+    force: true,
   },
   esbuild: {
-    target: 'esnext', // Ensure modern ES module compatibility
+    target: 'esnext',
   },
 });
