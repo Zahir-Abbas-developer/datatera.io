@@ -4,10 +4,10 @@ import * as yup from 'yup';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Loader2 } from 'lucide-react';
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useAuth } from '@/context/AuthContext'; // Import this
-import { Label } from "@/components/ui/label";
+import { useAuth } from '../../../context/AuthContext'; // Import this
+import { Label } from "../../../components/ui/label";
+import { Button } from '../../../components/ui/button';
+import { Input } from '../../../components/ui/input';
 
 const EnterEmail = () => {
   const [isLoading, setIsLoading] = useState(false);

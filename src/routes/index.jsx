@@ -1,13 +1,13 @@
 // src/AppRoutes.tsx
 import React, { Suspense, lazy, useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import Signup from '@/components/authentication/signUp/Signup';
-import EnterEmail from '@/components/authentication/forgotPassword/EnterEmail';
-import TransformationTemplatesPage from '@/components/transformations/TransformationTemplatesPage';
-import ProtectedLayout from '@/layouts/ProtectedLayout';
-import TransformationTable from '@/components/transformations/TransformationTable';
+import Signup from '../components/authentication/signUp/Signup';
+import EnterEmail from '../components/authentication/forgotPassword/EnterEmail';
+import TransformationTemplatesPage from '../components/transformations/TransformationTemplatesPage';
+import TransformationTable from '../components/transformations/TransformationTable';
+import ProtectedLayout from '../layouts/ProtectedLayout';
 
-const Signin = lazy(() => import('@/components/authentication/signIn/Signin'));
+const Signin = lazy(() => import('../components/authentication/signIn/Signin'));
 
 const AppRoutes = () => {
   const [isStickyHeader, setIsStickyHeader] = useState(true); // your shared state

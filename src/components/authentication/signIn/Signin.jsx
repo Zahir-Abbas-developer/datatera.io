@@ -4,8 +4,8 @@ import * as yup from 'yup';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
-import { useAuth } from '@/context/AuthContext';
-import api from '@/api';
+import { useAuth } from '../../../context/AuthContext';
+import api from '../../../api';
 
 const Signin = () => {
   const [showPassword, setShowPassword] = useState(false);

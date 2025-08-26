@@ -9,7 +9,7 @@ import {
   Bell
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import { Tooltip, TooltipTrigger, TooltipContent } from './tooltip';
 import TransformationLimitBar from '../transformations/TransformationLimitBar';
 import { 
@@ -18,10 +18,10 @@ import {
   SelectItem, 
   SelectTrigger, 
   SelectValue,
-} from "@/components/ui/select";
-import { cn } from '@/lib/utils';
-import api from '@/api';
-import catchAsync from '@/utiles/catchAsync';
+} from "../../components/ui/select";
+import { cn } from '../../lib/utils';
+import api from '../../api';
+import catchAsync from '../../utiles/catchAsync';
 
 const Sidebar = ({
   userEmail = 'mihailorama@gmail.com',

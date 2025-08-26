@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+// import {
+//   DropdownMenu,
+//   DropdownMenuContent,
+//   DropdownMenuItem,
+//   DropdownMenuTrigger,
+// } from "@/components/ui/dropdown-menu";
 import { ChevronDown, FileSpreadsheet, FileText, Braces } from "lucide-react";
+import { Button } from '../ui/button';
+import { Checkbox } from '../ui/checkbox';
+import { DropdownMenu,DropdownMenuContent,DropdownMenuItem,DropdownMenuTrigger } from '../ui/dropdown-menu';
 
 export default function FooterComponent() {
   const [showSampleData, setShowSampleData] = useState(false);

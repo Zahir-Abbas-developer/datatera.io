@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { useAuth } from '@/context/AuthContext';
-import Sidebar from '@/components/ui/Sidebar';
+import { useAuth } from '../context/AuthContext';
+import Sidebar from '../components/ui/Sidebar';
 import { Menu } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import HeaderComponent from '@/components/header';
-import FooterComponent from '@/components/footer';
+import { cn } from '../lib/utils';
+import HeaderComponent from '../components/header';
+import FooterComponent from '../components/footer';
 
 const ProtectedLayout = ({ setIsStickyHeader }) => {
   const { user } = useAuth();
