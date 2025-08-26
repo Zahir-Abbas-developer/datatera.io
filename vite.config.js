@@ -6,8 +6,9 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      'react-router': 'react-router/dist/index.js',
-      'react-router-dom': 'react-router-dom/dist/index.js',
+      // ✅ Just point to package root instead of non-existent dist/index.js
+      'react-router': 'react-router',
+      'react-router-dom': 'react-router-dom',
     },
   },
   build: {
