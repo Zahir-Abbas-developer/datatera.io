@@ -6,7 +6,8 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      'react-router': 'react-router/dist/index.js',
+      'react-router-dom': 'react-router-dom/dist/index.js',
     },
   },
   build: {
