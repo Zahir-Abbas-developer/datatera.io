@@ -4,7 +4,9 @@ import { Input } from './input';
 import AddTransformationModal from './AddTransformationModal';
 import { 
   Menu, ChevronDown, ChevronUp, MoreVertical, Plus, X, Search, User, LogOut, 
-  ExternalLink, Star, Pencil, Copy, EyeOff, Trash2, ChevronLeft, ChevronRight
+  ExternalLink, Star, Pencil, Copy, EyeOff, Trash2, ChevronLeft, ChevronRight,
+  MessageSquare,
+  Bell
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
@@ -18,6 +20,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from '@/lib/utils';
+import api from '@/api';
+import catchAsync from '@/utiles/catchAsync';
 
 const Sidebar = ({
   userEmail = 'mihailorama@gmail.com',
@@ -46,6 +50,11 @@ const Sidebar = ({
   const [modalMode, setModalMode] = useState('create');
   const [editingItem, setEditingItem] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
+   const [conversions, setConversions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+    const [firstCheckLocation, setFirstCheckLocation] = useState(true);
+
   const menuRef = useRef();
   const navigate = useNavigate();
   const { logout } = useAuth();
@@ -77,17 +86,72 @@ const Sidebar = ({
       }),
     },
   ];
+  // Fetch conversions from API
+  const fetchConversions = async () => {
+    try {
+      setLoading(true);
+      const userId = JSON.parse(localStorage.getItem('user'))?._id;
+      const response = await api.get(`/conversion/all-notes/${userId}`);
+      setConversions(response.data.getAllConversion || []);
+    } catch (error) {
+      console.error('Error fetching conversions:', error);
+      setConversions([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+  // Delete conversion
+ const deleteConversions = catchAsync(async (id) => {
+    let res = await api.delete(`/conversion/${id}`);
+    let currCons = JSON.parse(localStorage.getItem('currentConverstion'));
+    if (currCons === id) {
+      localStorage.removeItem('currentConverstion');
+      setListItems(null);
+    }
+    const data = conversions.filter((elem) => {
+      return elem._id !== id;
+    });
+    setConversions(data);
+    if (data?.length === 0) {
+      const queryParams = new URLSearchParams(window.location.search);
+      queryParams.delete('id');
+      navigate('/?' + queryParams.toString());
+    } else {
+      handleButtonClick(conversions[0]._id);
+      setListItems(conversions[0]._id);
+    }
+    setFirstCheckLocation(false);
+  });
 
-  const handleMenuAction = (action, item) => {
+  // Toggle subscription
+  const toggleSubscription = async (id) => {
+    try {
+      await api.patch(`/conversion/subscribeEmail/${id}`);
+      // Refresh conversions to get updated subscription status
+      fetchConversions();
+    } catch (error) {
+      console.error('Error toggling subscription:', error);
+    }
+  };
+
+  // Handle search
+  const handleSearch = (event) => {
+    setSearchQuery(event.target.value.toLowerCase());
+  };
+
+  // Filter conversions based on search query
+ const filteredConversions = conversions.filter(conv =>
+  conv?.name?.toLowerCase()?.includes(searchQuery)
+);
+
+  const handleMenuAction = async (action, conversion) => {
     switch (action) {
       case 'edit':
         setModalMode('edit');
-        setEditingItem({
-          name: item,
-          description: ''
-        });
+        setEditingItem(conversion);
         setShowModal(true);
         break;
+
       case 'copyWithoutData':
         break;
       case 'copyWithData':
@@ -95,6 +159,8 @@ const Sidebar = ({
       case 'unsubscribe':
         break;
       case 'delete':
+         await deleteConversions(conversion._id);
+
         break;
     }
     setOpenMenuIdx(null);
@@ -125,6 +191,36 @@ const Sidebar = ({
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, [onCollapsedChange]);
+
+  // useEffect(() => {
+  //   const handleClickOutside = (e) => {
+  //     if (menuRef.current && !menuRef.current.contains(e.target)) {
+  //       setOpenMenuIdx(null);
+  //     }
+  //   };
+  //   document.addEventListener('mousedown', handleClickOutside);
+  //   return () => document.removeEventListener('mousedown', handleClickOutside);
+  // }, []);
+
+  // useEffect(() => {
+  //   const checkMobile = () => {
+  //     const mobile = window.innerWidth < 768;
+  //     setIsMobile(mobile);
+  //     if (mobile) {
+  //       onCollapsedChange(true);
+  //     }
+  //   };
+    
+  //   checkMobile();
+  //   window.addEventListener('resize', checkMobile);
+  //   return () => window.removeEventListener('resize', checkMobile);
+  // }, [onCollapsedChange]);
+
+  // Fetch conversions on component mount
+  useEffect(() => {
+    fetchConversions();
+  }, []);
+
 
   const chromeIcon = (
     <svg
@@ -231,11 +327,13 @@ const Sidebar = ({
           {!isCollapsed && (
             <div className="flex-shrink-0 px-4 pb-2 w-full">
               <div className="relative">
-                <Input
-                  type="text"
-                  placeholder="Search transformations..."
-                  className="w-full bg-[#232323] text-white border-none pl-10 placeholder:text-gray-400 focus:ring-2 focus:ring-[#4AA181]"
-                />
+               <Input
+  type="text"
+  placeholder="Search transformations..."
+  value={searchQuery}   // ✅ controlled value
+  onChange={handleSearch} // ✅ updates state
+  className="w-full bg-[#232323] text-white border-none pl-10 placeholder:text-gray-400 focus:ring-2 focus:ring-[#4AA181]"
+/>
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
               </div>
             </div>
@@ -265,84 +363,128 @@ const Sidebar = ({
                 scrollbar-color: #444 transparent;
               }
             `}</style>
-            <ul className={`space-y-1 py-2 ${isCollapsed ? 'flex flex-col items-center' : ''}`}>
-              {transformations.map((item, idx) => (
-                <li key={idx} className="relative w-full">
-                  <div
-                    className={`flex items-center ${!isCollapsed ? 'justify-between' : 'justify-center'} px-2 py-2 rounded-lg hover:bg-[#232323] cursor-pointer group`}
-                    title={isCollapsed ? item : undefined}
-                  >
-                    <div className="flex items-center gap-2" onClick={() => {
-                      navigate('/transformation-table');
-                      if (isMobile) onCollapsedChange(true);
-                    }}>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Menu size={18} className="text-[#b3b3b3]" />
-                        </TooltipTrigger>
-                        <TooltipContent side="right" className="bg-[#232323] text-white rounded px-3 py-1.5 text-sm shadow-lg border border-[#333]">
-                          {item}
-                        </TooltipContent>
-                      </Tooltip>
-                      {!isCollapsed && <span className="truncate font-medium text-sm">{item}</span>}
-                    </div>
-                    {!isCollapsed && (
-                      <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100">
-                        <ChevronUp size={16} className="hover:text-[#4AA181] cursor-pointer" />
-                        <ChevronDown size={16} className="hover:text-[#4AA181] cursor-pointer" />
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setOpenMenuIdx(openMenuIdx === idx ? null : idx);
-                          }}
-                          className="hover:text-[#4AA181] cursor-pointer relative"
-                        >
-                          <MoreVertical size={16} />
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                  {/* Dropdown menu */}
-                  {openMenuIdx === idx && !isCollapsed && (
-                    <div
-                      ref={menuRef}
-                      className="absolute right-2 top-2 z-50 w-60 bg-[#232323] rounded-xl shadow-xl py-2 px-1 border border-[#333] animate-fade-in"
-                    >
-                      <button
-                        onClick={() => handleMenuAction('edit', item)}
-                        className="flex items-center gap-2 w-full px-3 py-2 rounded-lg hover:bg-[#292929] text-sm text-white"
-                      >
-                        <Pencil size={16} /> Edit name and descriptions
-                      </button>
-                      <button
-                        onClick={() => handleMenuAction('copyWithoutData', item)}
-                        className="flex items-center gap-2 w-full px-3 py-2 rounded-lg hover:bg-[#292929] text-sm text-white"
-                      >
-                        <Copy size={16} /> Copy without data
-                      </button>
-                      <button
-                        onClick={() => handleMenuAction('copyWithData', item)}
-                        className="flex items-center gap-2 w-full px-3 py-2 rounded-lg hover:bg-[#292929] text-sm text-white"
-                      >
-                        <Copy size={16} /> Copy with data
-                      </button>
-                      <button
-                        onClick={() => handleMenuAction('unsubscribe', item)}
-                        className="flex items-center gap-2 w-full px-3 py-2 rounded-lg hover:bg-[#292929] text-sm text-red-400"
-                      >
-                        <EyeOff size={16} /> Unsubscribe
-                      </button>
-                      <button
-                        onClick={() => handleMenuAction('delete', item)}
-                        className="flex items-center gap-2 w-full px-3 py-2 rounded-lg hover:bg-[#292929] text-sm text-red-500"
-                      >
-                        <Trash2 size={16} /> Delete
-                      </button>
-                    </div>
-                  )}
-                </li>
-              ))}
-            </ul>
+         <ul className={`space-y-1 py-2 ${isCollapsed ? 'flex flex-col items-center' : ''}`}>
+  {loading ? (
+    <div className="text-center py-4 text-gray-400">Loading conversions...</div>
+  ) : filteredConversions.length > 0 ? (
+    filteredConversions.map((conversion, idx) => {
+      const displayName = conversion.name.length > 16 
+        ? `${conversion.name.substring(0, 16)}...` 
+        : conversion.name;
+      
+      return (
+        <li key={conversion._id} className="relative w-full">
+          <div
+            className={`flex items-center ${!isCollapsed ? 'justify-between' : 'justify-center'} px-2 py-2 rounded-lg hover:bg-[#232323] cursor-pointer group`}
+            title={isCollapsed ? conversion.name : undefined}
+          >
+            <div className="flex items-center gap-2" onClick={() => {
+              // Handle conversion selection - you might want to pass the conversion ID
+              // navigate(`/transformation-table?id=${conversion._id}`);
+              if (isMobile) onCollapsedChange(true);
+            }}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <MessageSquare size={18} className="text-[#b3b3b3]" />
+                </TooltipTrigger>
+                <TooltipContent side="right" className="bg-[#232323] text-white rounded px-3 py-1.5 text-sm shadow-lg border border-[#333]">
+                  {conversion.name}
+                </TooltipContent>
+              </Tooltip>
+              {!isCollapsed && <span className="truncate font-medium text-sm">{displayName}</span>}
+            </div>
+            {!isCollapsed && (
+              <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100">
+                <ChevronUp 
+                  size={16} 
+                  className="hover:text-[#4AA181] cursor-pointer" 
+                  onClick={async (e) => {
+                    e.stopPropagation();
+                    // Implement move up functionality if needed
+                    // This would require API calls to reorder conversions
+                  }}
+                />
+                <ChevronDown 
+                  size={16} 
+                  className="hover:text-[#4AA181] cursor-pointer"
+                  onClick={async (e) => {
+                    e.stopPropagation();
+                    // Implement move down functionality if needed
+                  }}
+                />
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setOpenMenuIdx(openMenuIdx === idx ? null : idx);
+                  }}
+                  className="hover:text-[#4AA181] cursor-pointer relative"
+                >
+                  <MoreVertical size={16} />
+                </button>
+              </div>
+            )}
+          </div>
+          
+          {/* Dropdown menu */}
+          {openMenuIdx === idx && !isCollapsed && (
+            <div
+              ref={menuRef}
+              className="absolute right-2 top-2 z-50 w-60 bg-[#232323] rounded-xl shadow-xl py-2 px-1 border border-[#333] animate-fade-in"
+            >
+              <button
+                onClick={() => handleMenuAction('edit', conversion)}
+                className="flex items-center gap-2 w-full px-3 py-2 rounded-lg hover:bg-[#292929] text-sm text-white"
+              >
+                <Pencil size={16} /> Edit name and description
+              </button>
+              <button
+                onClick={() => handleMenuAction('copyWithoutData', conversion)}
+                className="flex items-center gap-2 w-full px-3 py-2 rounded-lg hover:bg-[#292929] text-sm text-white"
+              >
+                <Copy size={16} /> Copy without data
+              </button>
+              <button
+                onClick={() => handleMenuAction('copyWithData', conversion)}
+                className="flex items-center gap-2 w-full px-3 py-2 rounded-lg hover:bg-[#292929] text-sm text-white"
+              >
+                <Copy size={16} /> Copy with data
+              </button>
+              <button
+                onClick={() => handleMenuAction(
+                  conversion.emailSubscription ? 'unsubscribe' : 'subscribe', 
+                  conversion
+                )}
+                className={`flex items-center gap-2 w-full px-3 py-2 rounded-lg hover:bg-[#292929] text-sm ${
+                  conversion.emailSubscription ? 'text-red-400' : 'text-green-400'
+                }`}
+              >
+                {conversion.emailSubscription ? (
+                  <>
+                    <EyeOff size={16} /> Unsubscribe
+                  </>
+                ) : (
+                  <>
+                    <Bell size={16} /> Subscribe
+                  </>
+                )}
+              </button>
+              <button
+                onClick={() => handleMenuAction('delete', conversion)}
+                className="flex items-center gap-2 w-full px-3 py-2 rounded-lg hover:bg-[#292929] text-sm text-red-500"
+              >
+                <Trash2 size={16} /> Delete
+              </button>
+            </div>
+          )}
+        </li>
+      );
+    })
+  ) : (
+    <div className="text-center py-4 text-gray-400">
+      {searchQuery ? 'No matching transformations found' : 'No transformations yet'}
+    </div>
+  )}
+</ul>
           </nav>
 
           {/* Bottom Section */}

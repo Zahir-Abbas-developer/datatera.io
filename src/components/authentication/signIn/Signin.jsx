@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import api from '@/api';
 
 const Signin = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -23,20 +24,38 @@ const Signin = () => {
       password: yup.string().min(6, 'Minimum 6 characters').required('Password is required'),
     }),
     onSubmit: async (values, { resetForm }) => {
-      try {
-        setIsLoading(true);
-        await new Promise((res) => setTimeout(res, 1500));
-        login({ email: 'googleuser@example.com' }); // Dummy google user
-        toast.success('Login successful!');
-        navigate('/dashboard');
-        resetForm();
-      } catch (err) {
-        toast.error('Login failed!');
-      } finally {
-        setIsLoading(false);
-      }
-    },
+  try {
+    setIsLoading(true);
+    const res = await api.post('/user/login', values);
+    console.log(res, "res");
+
+    // ✅ Store token/user in context or localStorage
+    login(res.data.token, res.data.data.user);
+
+    toast.success('Login successful!');
+    navigate('/dashboard');
+    resetForm();
+  } catch (err) {
+    toast.error('Login failed!');
+  } finally {
+    setIsLoading(false);
+  }
+}
   });
+
+  //  const onSubmit = async (values, resetForm) => {
+  //   try {
+  //     setIsLoading(true);
+  //     const res = await api.post('/user/login', values);
+  //     loginSuccess(res.data.token, res.data.data.user);
+  //     navigate('/');
+  //     resetForm();
+  //     setIsLoading(false);
+  //   } catch (error) {
+  //     setIsLoading(false);
+  //     toast(error?.response?.data?.message, { type: 'error' });
+  //   }
+  // };
 
   const handleGoogleLogin = async () => {
     setIsLoading(true);
