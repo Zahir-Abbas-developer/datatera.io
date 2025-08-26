@@ -5,8 +5,8 @@ import path from 'path';
 export default defineConfig({
   plugins: [react()],
   resolve: {
-    alias: {
-      // ✅ Just point to package root instead of non-existent dist/index.js
+   alias: {
+      '@': path.resolve(__dirname, './src'),   // 👈 add this
       'react-router': 'react-router',
       'react-router-dom': 'react-router-dom',
     },
