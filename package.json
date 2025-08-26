@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+      "vercel-build": "npm rebuild esbuild && npm run build",
     "build": "chmod +x node_modules/.bin/vite && vite build",
     "dev": "vite",
     "lint": "eslint .",
