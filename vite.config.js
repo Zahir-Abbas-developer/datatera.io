@@ -5,19 +5,19 @@ import path from 'path';
 export default defineConfig({
   plugins: [react()],
   resolve: {
-   alias: {
-      '@': path.resolve(__dirname, './src'),   // 👈 add this
-      'react-router': 'react-router',
-      'react-router-dom': 'react-router-dom',
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+      'react-router': 'react-router',        // ✅ correct
+      'react-router-dom': 'react-router-dom' // ✅ correct
     },
   },
   build: {
     outDir: 'dist',
     rollupOptions: {
-      external: [/^node:.*/], // Prevent Node.js built-in modules from being bundled
+      external: [/^node:.*/],
     },
   },
   optimizeDeps: {
-    include: ['react-router-dom'], // Pre-bundle react-router-dom
+    include: ['react-router-dom'],
   },
 });
