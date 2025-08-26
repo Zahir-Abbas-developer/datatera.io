@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-  "build": "vite build",
-  "dev": "vite",
+  "build": "npx vite build",
+  "dev": "npx vite",
   "lint": "eslint .",
-  "preview": "vite preview",
+  "preview": "npx vite preview",
   "vercel-build": "npm run build"
 },
   "dependencies": {
