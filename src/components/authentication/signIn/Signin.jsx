@@ -22,6 +22,7 @@ import { Separator } from "../../../components/ui/separator";
 import { useAuth } from "../../../context/AuthContext";
 // import { auth, provider } from "../../../config/firebaseConfig";
 import api from "../../../api";
+import '../../../index.css'
 
 const Signin = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -42,7 +43,7 @@ const Signin = () => {
         login(res.data.token, res.data.data.user);
 
         toast.success("Login successful!");
-        navigate("/");
+        navigate("/dashboard");
         resetForm();
       } catch (err) {
         toast.error(err?.response?.data?.message || "Login failed!");
@@ -79,7 +80,7 @@ const Signin = () => {
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold">Login</CardTitle>
+          <CardTitle className="text-2xl font-bold ">Login</CardTitle>
           <CardDescription>
             Enter your credentials to access your account
           </CardDescription>
